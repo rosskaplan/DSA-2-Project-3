@@ -148,7 +148,6 @@ bool hashTable::remove(const string &key) {
     if (temp == -1)
         return false;
 
-    --filled;
     data[temp].isDeleted = true;
     return true;
 }
