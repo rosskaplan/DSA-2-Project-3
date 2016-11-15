@@ -123,10 +123,12 @@ void *hashTable::getPointer(const string &key, bool *b) {
    
     int temp = findPos(key);
     if (temp == -1) {
-        *b = false;
+        if (b)
+            *b = false;
         return NULL;
     } else {
-        *b = true;
+        if (b)
+            *b = true;
         return data[temp].pv;
     }
  

@@ -4,7 +4,7 @@ dijkstra.exe: usegraph.o graph.o heap.o hash.o
 usegraph.o: usegraph.cpp
 	g++ -c usegraph.cpp --std=c++11
 
-graph.o: graph.cpp
+graph.o: graph.cpp graph.h
 	g++ -c graph.cpp --std=c++11
 
 heap.o: heap.cpp heap.h
