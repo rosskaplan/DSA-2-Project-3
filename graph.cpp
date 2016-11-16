@@ -19,16 +19,16 @@ Graph::Graph(int size){
 }
 
 Graph::graphVertex *Graph::insertVertex(string id){
-	Graph::graphVertex* temp=new Graph::graphVertex(); // Allocate space for vertex
+	Graph::graphVertex* temp=new Graph::graphVertex(); //New vertex
     temp->id = id;
-	ht->insert(id,temp); // Add vertex to vertex hashtable
-	vertices.push_back(temp); // Add vertex to vertex list
+	ht->insert(id,temp);
+	vertices.push_back(temp);
 	return temp;
 }
 
 void Graph::insertEdge(string source, string destination, unsigned long cost){
 	graphVertex *start, *end;
-	// Determine whether src and dest vertices exist. If not create them. Get their memory addresses
+
     if (graphContains(source))
         start = (graphVertex*)(ht->getPointer(source));
     else
@@ -47,39 +47,38 @@ void Graph::insertEdge(string source, string destination, unsigned long cost){
 
 void Graph::runDijkstra(string id){
     int heapsize = vertices.size();
-	heap myheap(heapsize);
+	heap H(heapsize);
 
 	list<graphVertex*>::iterator vitt;
 
 	graphVertex *temp;
 	
-	//Initialize Heap
+	//Add all vertices to heap. Set distances to infinite so that any distance is smaller. Set unknown.
 	for(vitt = vertices.begin(); vitt !=vertices.end(); ++vitt){
 		temp=*vitt;
 		temp->distance=INT_MAX;
-		temp->known=false; //Don't know any vertices, all distances are max int
-		myheap.insert(temp->id,temp->distance,temp);
+		temp->known=false;
+		H.insert(temp->id,temp->distance,temp);
 	}
     
-    //Set source's distance = 0	
 	temp=(graphVertex*)ht->getPointer(id);
     temp->distance = 0;
-	myheap.setKey(id,0);
+	H.setKey(id,0);
 	
 	list<graphEdge>::iterator eitt;
     graphVertex *temp2;
 
-	while(!myheap.deleteMin(NULL, NULL, &temp)) { 
+	while(!H.deleteMin(NULL, NULL, &temp)) { 
 		temp->known=true;
 
         //Textbook's algorithm: 
 		for(eitt=(temp->adj).begin(); eitt!=(temp->adj).end(); eitt++){
-			temp2 = eitt->destination; //Get the edge's destination
-            unsigned long &old_dist=temp2->distance; //Previous distance
-			unsigned long new_dist=temp->distance + eitt->cost; //New path + new weight to get there
+			temp2 = eitt->destination;
+            unsigned long &old_dist=temp2->distance;
+			unsigned long new_dist=temp->distance + eitt->cost;
 			if(new_dist<old_dist){
                 old_dist = new_dist;
-				myheap.setKey(temp2->id,old_dist); // Update distance of w in vertex and heap
+				H.setKey(temp2->id,old_dist); 
 				temp2->previous=temp;
 			}
 		}
@@ -88,25 +87,24 @@ void Graph::runDijkstra(string id){
 
 void Graph::printDijkstra(string source, ofstream &out){
     list<graphVertex*>::iterator itt; 
-    stack<string> mystack; 
-    //Traverse the list of vertices
+    stack<string> S; 
+    //Print for each vertex
     for(itt=vertices.begin(); itt != vertices.end(); itt++ ) {
-        //vertices without paths from source
         out << (*itt)->id << ": ";
         if ( (*itt)->previous==NULL && (*itt)->id != source)
-            out << "NO PATH" << endl; //End string with no path and don't traverse tree
-        else{ //Traverse the list, print path
+            out << "NO PATH" << endl; 
+        else{
             string path;			
             out <<(*itt)->distance;
             out << " [";
             while((*itt)->previous != NULL) {
-                mystack.push((*itt)->id);
+                S.push((*itt)->id);
                 *itt = (*itt)->previous;
             }
             out << source;
-            while(!mystack.empty()) {
-                out << ", " << mystack.top();
-                mystack.pop();
+            while(!S.empty()) {
+                out << ", " << S.top();
+                S.pop();
             }
             out << "]" << endl;
         }

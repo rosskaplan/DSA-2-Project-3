@@ -21,10 +21,6 @@ int main(){
 	cin >> inFile;
 	
 	ifstream in(inFile.c_str());
-	if (!in.is_open()){ 
-		cerr << "Failed to open input file." << endl;
-		return -1;
-	}
 	
 	Graph G(5000);
 	while (in.good()){
@@ -51,10 +47,6 @@ int main(){
 	cin >> outFile;
 	
 	ofstream out(outFile.c_str());
-	if (!out.is_open()){
-		cerr << "Unable to open output file." << endl;
-		return -1;
-	}
 
 	G.printDijkstra(source, out);
 	out.close();

@@ -49,8 +49,8 @@ class Graph{
         list<graphVertex*> vertices;
         hashTable *ht; 
   
-        //Inserts vertex into graph
+        //Inserts vertices into graph
         graphVertex *insertVertex(string id);
 };
 
-#endif //_GRAPH_H	
+#endif
